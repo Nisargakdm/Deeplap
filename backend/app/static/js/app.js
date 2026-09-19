@@ -41,10 +41,38 @@ let currentWeights = {
     penalty_ais_gap: 0.10
 };
 
+window.switchWorkspace = function(wsId) {
+    document.querySelectorAll('.workspace-panel').forEach(panel => {
+        panel.classList.add('hidden');
+    });
+    
+    const activeWs = document.getElementById(wsId);
+    if (activeWs) {
+        activeWs.classList.remove('hidden');
+    }
+    
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-ws') === wsId) {
+            btn.classList.remove('hover:bg-navy-800', 'border-transparent', 'text-slate-400', 'hover:text-cyan-300');
+            btn.classList.add('bg-navy-850', 'border-cyan-500/50', 'text-cyan-400', 'shadow-[0_0_15px_rgba(6,182,212,0.3)]');
+        } else {
+            btn.classList.add('hover:bg-navy-800', 'border-transparent', 'text-slate-400', 'hover:text-cyan-300');
+            btn.classList.remove('bg-navy-850', 'border-cyan-500/50', 'text-cyan-400', 'shadow-[0_0_15px_rgba(6,182,212,0.3)]');
+        }
+    });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     initMap();
     setupEventListeners();
     loadCaseData(currentCaseId);
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+    // Initialize default workspace
+    if (window.switchWorkspace) {
+        window.switchWorkspace('ws-cmd');
+    }
 });
 
 function initMap() {
@@ -142,7 +170,7 @@ async function loadCaseData(caseId) {
         showToast(`Loaded scenario: ${caseSummary.title}`);
     } catch (err) {
         console.error("Error loading case:", err);
-        showToast("Error loading case data");
+        showToast("Error loading case data: " + err.message);
     }
 }
 
@@ -625,6 +653,14 @@ function updateActiveWeightsUI() {
 }
 
 function setupEventListeners() {
+    // Navigation Rail
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const wsId = e.currentTarget.getAttribute('data-ws');
+            if (wsId) window.switchWorkspace(wsId);
+        });
+    });
+
     document.getElementById("case-selector").addEventListener("change", (e) => {
         loadCaseData(e.target.value);
     });
