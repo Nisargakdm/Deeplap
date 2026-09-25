@@ -457,3 +457,5 @@ This section is honest about what is fully wired versus what uses simplified sta
 ## 14. License & Compliance
 
 All dependencies and data sources are open-source or public domain. See [`open_source_license_report.md`](open_source_license_report.md) for the full audit.
+#   D e e p l a p  
+ 
