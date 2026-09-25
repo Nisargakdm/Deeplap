@@ -107,16 +107,27 @@ code, pre, .font-mono {
 }
 
 .leaflet-popup-content-wrapper {
-    background: #0f172a !important;
+    background: #182234 !important;
     color: #f8fafc !important;
     border: 1px solid #334155 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
 }
 
 .leaflet-popup-tip {
-    background: #0f172a !important;
+    background: #182234 !important;
     border: 1px solid #334155 !important;
+}
+
+/* Tactical Glows */
+.glow-cyan {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.4) !important;
+}
+.glow-amber {
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3) !important;
+}
+.glow-red {
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.35) !important;
 }
 
 /* Custom Ship & Origin Markers */
