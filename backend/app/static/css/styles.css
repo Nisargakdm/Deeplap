@@ -56,7 +56,7 @@ body {
     border-radius: 3px;
 }
 #dashboard-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: #0ea5e9;
+    background: var(--accent);
 }
 
 code, pre, .font-mono {
@@ -79,7 +79,7 @@ code, pre, .font-mono {
 }
 
 .custom-scroll::-webkit-scrollbar-thumb:hover {
-    background: #0ea5e9;
+    background: var(--accent);
 }
 
 /* Leaflet Overrides */
@@ -208,16 +208,15 @@ code, pre, .font-mono {
     font-weight: 700;
     letter-spacing: 0.05em;
     padding: 1px 6px;
-    border-radius: 999px;
     border-width: 1px;
     border-style: solid;
 }
-.risk-LOW      { background: rgba(16,185,129,0.12); color: #34d399; border-color: rgba(52,211,153,0.3); }
-.risk-MEDIUM   { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.3); }
-.risk-HIGH     { background: rgba(239,68,68,0.15);  color: #f87171; border-color: rgba(248,113,113,0.35); }
-.risk-ELEVATED { background: rgba(168,85,247,0.15); color: #c084fc; border-color: rgba(192,132,252,0.35); }
+.risk-LOW      { background: color-mix(in srgb, var(--good) 12%, transparent); color: var(--good); border-color: color-mix(in srgb, var(--good) 30%, transparent); }
+.risk-MEDIUM   { background: color-mix(in srgb, var(--alert) 12%, transparent); color: var(--alert); border-color: color-mix(in srgb, var(--alert) 30%, transparent); }
+.risk-HIGH     { background: color-mix(in srgb, var(--alert) 15%, transparent); color: var(--alert); border-color: color-mix(in srgb, var(--alert) 35%, transparent); }
+.risk-ELEVATED { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
 .risk-INSUFFICIENT_DATA,
-.risk-UNKNOWN  { background: rgba(71,85,105,0.2);   color: #94a3b8; border-color: rgba(100,116,139,0.3); }
+.risk-UNKNOWN  { background: color-mix(in srgb, var(--muted) 20%, transparent); color: var(--muted); border-color: color-mix(in srgb, var(--muted) 30%, transparent); }
 
 /* ── Simulation mode badge ─────────────────────────────────────────────────── */
 #sim-mode-badge {
@@ -229,10 +228,9 @@ code, pre, .font-mono {
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 3px 10px;
-    border-radius: 999px;
-    background: rgba(245,158,11,0.12);
-    color: #f59e0b;
-    border: 1px solid rgba(245,158,11,0.35);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 /* ── Section panel headers ─────────────────────────────────────────────────── */
@@ -310,3 +308,46 @@ code, pre, .font-mono {
 #map-layer-panel::-webkit-scrollbar { width: 3px; }
 #map-layer-panel::-webkit-scrollbar-track { background: transparent; }
 #map-layer-panel::-webkit-scrollbar-thumb { background: #1e2e4f; border-radius: 3px; }
+
+/* ── Premium Maritime Aesthetics ──────── */
+:root {
+    --bg: #F5F7F5;
+    --surface: #FFFFFF;
+    --surface-2: #EDF1EC;
+    --hairline: #DCE3DE;
+    --hairline-strong: #C2CCC5;
+    --ink: #0E1512;
+    --muted: #5E6B63;
+    --muted-2: #94A099;
+    --accent: #0E8F74;
+    --accent-ink: #FFFFFF;
+    --alert: #C23327;
+    --good: #1D7A53;
+}
+
+.dark {
+    --bg: #080C0B;
+    --surface: #0F1512;
+    --surface-2: #151D19;
+    --hairline: #22302A;
+    --hairline-strong: #334539;
+    --ink: #EFF4F1;
+    --muted: #84958C;
+    --muted-2: #52605A;
+    --accent: #1FA98C;
+    --accent-ink: #04140F;
+    --alert: #FF4438;
+    --good: #3FD9A6;
+}
+
+.workspace-panel {
+    /* Background colors will be provided by tailwind */
+    position: relative;
+    /* Ensure z-index is higher than map controls */
+    z-index: 40 !important;
+}
+
+/* Map overlays container z-index management */
+.leaflet-top, .leaflet-bottom {
+    z-index: 5 !important;
+}
