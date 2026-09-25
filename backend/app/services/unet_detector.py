@@ -75,12 +75,10 @@ class UNetDetector:
                     logger.info(f"Loaded trained U-Net weights ({self.num_classes} classes) from {self.model_path}")
                 except Exception as e:
                     logger.warning(f"Could not load state_dict ({e}), running fallback evaluation.")
-                    self.model = SimpleUNet(num_classes=self.num_classes)
-                    self.model.eval()
+                    self.model = None
             else:
-                self.model = SimpleUNet(num_classes=self.num_classes)
-                self.model.eval()
-                logger.info(f"Initialized UNet architecture with {self.num_classes} classes (no weights file at {self.model_path}).")
+                self.model = None
+                logger.info(f"No weights file at {self.model_path}, using fallback segmentation.")
         except Exception as e:
             logger.warning(f"PyTorch not available or error initializing UNet: {e}. Using fallback segmentation kernel.")
             self.model = None

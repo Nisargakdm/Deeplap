@@ -20,7 +20,8 @@ let contourLayer = L.featureGroup();
 let currentVectorLayer = L.featureGroup();
 let particleLayer = L.featureGroup();
 let vesselLayer = L.featureGroup();
-let animMarkerLayer = L.featureGroup();
+let animParticleLayer = L.featureGroup();
+let animVesselLayer = L.featureGroup();
 let rulerLayer = L.featureGroup();
 
 // Timeline & Measure State
@@ -65,7 +66,16 @@ window.switchWorkspace = function(wsId) {
 document.addEventListener("DOMContentLoaded", () => {
     initMap();
     setupEventListeners();
-    loadCaseData(currentCaseId);
+    
+    const attemptLoad = () => {
+        if (document.getElementById("gis-map").clientWidth > 0) {
+            map.invalidateSize();
+            loadCaseData(currentCaseId);
+        } else {
+            setTimeout(attemptLoad, 50);
+        }
+    };
+    attemptLoad();
     if (window.lucide) {
         lucide.createIcons();
     }
@@ -99,8 +109,9 @@ function initMap() {
         center: [28.38, -89.15],
         zoom: 9,
         zoomControl: true,
-        layers: [baseLayers["dark"], spillLayer, ellipseLayer, probRingsLayer, contourLayer, currentVectorLayer, particleLayer, vesselLayer, animMarkerLayer, rulerLayer]
+        layers: [baseLayers["dark"], spillLayer, ellipseLayer, probRingsLayer, contourLayer, currentVectorLayer, particleLayer, vesselLayer, animParticleLayer, animVesselLayer, rulerLayer]
     });
+    window.map = map;
     currentBaseLayer = "dark";
 
     // Live Cursor Tracker
@@ -342,7 +353,8 @@ function renderVesselLayers() {
 }
 
 function updateAnimatedPositions() {
-    animMarkerLayer.clearLayers();
+    animVesselLayer.clearLayers();
+    animParticleLayer.clearLayers();
     if (!candidatesData || !caseSummary) return;
     const tObs = new Date(caseSummary.detection_timestamp);
     const targetTime = new Date(tObs.getTime() + timelineHour * 3600 * 1000);
@@ -376,7 +388,7 @@ function updateAnimatedPositions() {
             const marker = L.marker([pos.lat, pos.lon], { icon: vesselIcon, zIndexOffset: isSelected ? 500 : 100 })
                 .bindTooltip(`<b>${cand.vessel_name}</b><br>SOG: ${pos.sog} kts | COG: ${pos.cog}°<br>Score: ${Math.round(cand.overall_score * 100)}%`, { sticky: true });
             marker.on("click", () => selectCandidate(cand.mmsi));
-            animMarkerLayer.addLayer(marker);
+            animVesselLayer.addLayer(marker);
         }
     });
 
@@ -385,7 +397,7 @@ function updateAnimatedPositions() {
             const pt = traj.steps.find(s => Math.abs(s.time_offset_hours - timelineHour) < 0.35);
             if (pt) {
                 const pMarker = L.circleMarker([pt.lat, pt.lon], { radius: 2.5, color: "#38bdf8", fillColor: "#0284c7", fillOpacity: 0.8, weight: 1 });
-                animMarkerLayer.addLayer(pMarker);
+                animParticleLayer.addLayer(pMarker);
             }
         });
     }
@@ -704,8 +716,8 @@ function setupEventListeners() {
     document.getElementById("layer-current-vectors").addEventListener("change", (e) => { if (e.target.checked) map.addLayer(currentVectorLayer); else map.removeLayer(currentVectorLayer); });
     document.getElementById("layer-ellipses").addEventListener("change", (e) => { if (e.target.checked) map.addLayer(ellipseLayer); else map.removeLayer(ellipseLayer); });
     document.getElementById("layer-prob-rings").addEventListener("change", (e) => { if (e.target.checked) map.addLayer(probRingsLayer); else map.removeLayer(probRingsLayer); });
-    document.getElementById("layer-particles").addEventListener("change", (e) => { if (e.target.checked) map.addLayer(particleLayer); else map.removeLayer(particleLayer); });
-    document.getElementById("layer-ais-tracks").addEventListener("change", (e) => { if (e.target.checked) map.addLayer(vesselLayer); else map.removeLayer(vesselLayer); });
+    document.getElementById("layer-particles").addEventListener("change", (e) => { if (e.target.checked) { map.addLayer(particleLayer); map.addLayer(animParticleLayer); } else { map.removeLayer(particleLayer); map.removeLayer(animParticleLayer); } });
+    document.getElementById("layer-ais-tracks").addEventListener("change", (e) => { if (e.target.checked) { map.addLayer(vesselLayer); map.addLayer(animVesselLayer); } else { map.removeLayer(vesselLayer); map.removeLayer(animVesselLayer); } });
 
     // Quick Zoom Buttons
     document.getElementById("btn-fit-spill").addEventListener("click", () => { if (spillLayer.getLayers().length > 0) map.fitBounds(spillLayer.getBounds(), { padding: [50, 50] }); });
